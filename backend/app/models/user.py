@@ -51,7 +51,11 @@ class User(Base, UUIDMixin, TimestampMixin):
     phone_number = Column(String(20))
     preferred_language = Column(String(10), default="en", nullable=False)
     
-    # Geographic information
+    # Geographic and cultural context (foreign keys to dedicated models)
+    geographic_location_id = Column(UUID(as_uuid=True), ForeignKey("geographic_locations.id"))
+    cultural_context_id = Column(UUID(as_uuid=True), ForeignKey("cultural_contexts.id"))
+    
+    # Legacy geographic information (kept for backward compatibility)
     country = Column(String(100))
     region = Column(String(100))
     city = Column(String(100))
@@ -59,7 +63,7 @@ class User(Base, UUIDMixin, TimestampMixin):
     currency = Column(String(10))
     coordinates = Column(JSON)  # {"lat": float, "lng": float}
     
-    # Cultural context
+    # Legacy cultural context (kept for backward compatibility)
     cultural_profile = Column(JSON)  # Cultural preferences and context
     
     # Verification
@@ -91,6 +95,8 @@ class User(Base, UUIDMixin, TimestampMixin):
         uselist=False,
         cascade="all, delete-orphan"
     )
+    geographic_location = relationship("GeographicLocation", back_populates="users")
+    cultural_context = relationship("CulturalContext", back_populates="users")
     
     def __repr__(self) -> str:
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"

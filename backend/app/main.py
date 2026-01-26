@@ -12,6 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -80,6 +81,9 @@ def create_application() -> FastAPI:
     
     # Add routers
     app.include_router(api_router, prefix="/api/v1")
+    
+    # Mount static files for uploads
+    app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
     
     @app.get("/health")
     async def health_check():

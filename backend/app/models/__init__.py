@@ -7,3 +7,7 @@ from .negotiation import (
     Negotiation, NegotiationMessage, NegotiationEvent, CulturalProfile, TranslationCache,
     NegotiationStatus, MessageType, NegotiationEventType
 )
+from .geographic import (
+    GeographicLocation, CulturalContext, RegionConfiguration,
+    NegotiationStyle, TimeOrientation, RegionType, CurrencyCode
+)

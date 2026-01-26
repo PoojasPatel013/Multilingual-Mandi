@@ -72,7 +72,7 @@ async def init_db() -> None:
     Creates all tables defined in the models.
     """
     # Import all models here to ensure they are registered with SQLAlchemy
-    from app.models import user, product, transaction, negotiation  # noqa: F401
+    from app.models import user, product, transaction, negotiation, geographic  # noqa: F401
     
     async with engine.begin() as conn:
         # Create all tables
