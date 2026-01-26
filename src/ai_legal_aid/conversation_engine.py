@@ -93,6 +93,12 @@ class BasicConversationEngine:
                 context.session.language
             )
             disclaimer_type = "initial"
+        elif self.disclaimer_service._is_high_risk_situation(context) and not self.disclaimer_service._has_acknowledged_disclaimer(session_id, "high_risk"):
+            # High-risk situation disclaimer
+            disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
+                LegalIssueType.OTHER, context.session.language
+            )
+            disclaimer_type = "high_risk"
         elif context.session.user_context.legal_issue_type:
             issue_type = context.session.user_context.legal_issue_type
             disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(

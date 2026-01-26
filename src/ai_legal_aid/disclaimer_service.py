@@ -327,7 +327,9 @@ RECORDATORIO: Esta información es solo para propósitos educativos y no constit
         
         # Show disclaimer for high-risk situations
         if self._is_high_risk_situation(context):
-            return True
+            # Check if high-risk disclaimer has been acknowledged for this session
+            if not self._has_acknowledged_disclaimer(session_id, "high_risk"):
+                return True
         
         return False
 

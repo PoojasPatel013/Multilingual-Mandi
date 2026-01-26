@@ -68,7 +68,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - Create geographic and specialization-based search
     - _Requirements: 3.1, 3.2, 3.4, 7.3_
   
-  - [~] 4.2 Add fallback resource handling
+  - [-] 4.2 Add fallback resource handling
     - Implement national resource fallback for areas without local resources
     - Add resource availability and contact information validation
     - _Requirements: 3.5_
@@ -180,7 +180,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - **Validates: Requirements 1.4, 7.1, 7.2**
 
 - [ ] 11. Implement system performance and resilience features
-  - [ ] 11.1 Add performance monitoring and response time management
+  - [~] 11.1 Add performance monitoring and response time management
     - Implement response time tracking and optimization
     - Add load balancing and queuing for high traffic
     - Create graceful degradation for component failures
@@ -197,7 +197,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - Test error recovery and graceful degradation scenarios
     - _Requirements: All requirements (end-to-end validation)_
 
-- [ ] 13. Final checkpoint and system validation
+- [~] 13. Final checkpoint and system validation
   - Ensure all tests pass, ask the user if questions arise
   - Validate all 13 correctness properties are implemented and tested
   - Confirm all requirements are covered by implementation tasks

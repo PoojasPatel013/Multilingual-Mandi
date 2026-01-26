@@ -308,8 +308,9 @@ class TestResourceIntegration:
     @pytest.mark.asyncio
     async def test_resource_referrals_included(self, conversation_engine, sample_session, disclaimer_service):
         """Test that resource referrals are included when professional help is recommended."""
-        # Acknowledge disclaimer first
+        # Acknowledge disclaimers first
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "initial")
+        await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "high_risk")
         
         response = await conversation_engine.process_user_input(
             sample_session, "I need to sue my landlord for not returning my deposit"
@@ -322,8 +323,9 @@ class TestResourceIntegration:
     @pytest.mark.asyncio
     async def test_emergency_resources_prioritized(self, conversation_engine, sample_session, disclaimer_service):
         """Test that emergency resources are prioritized for urgent cases."""
-        # Acknowledge disclaimer first
+        # Acknowledge disclaimers first
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "initial")
+        await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "high_risk")
         
         response = await conversation_engine.process_user_input(
             sample_session, "I am in immediate danger from my partner"

@@ -72,7 +72,8 @@ class TestResourceDirectory:
         
         assert len(organizations) > 0
         for org in organizations:
-            assert "CA" in org.service_area.states
+            # Should serve CA either directly or through national coverage
+            assert "CA" in org.service_area.states or "ALL" in org.service_area.states
             assert LegalIssueType.TENANT_RIGHTS in org.specializations
 
     @pytest.mark.asyncio
@@ -283,3 +284,146 @@ class TestGeographicMatching:
         # Regular legal aid should not have 24-hour availability
         regular_org = resource_directory._organizations["legal_aid_society_la"]
         assert resource_directory._has_24_hour_availability(regular_org) is False
+
+
+class TestFallbackResourceHandling:
+    """Test fallback resource handling functionality."""
+
+    @pytest.mark.asyncio
+    async def test_fallback_when_no_local_resources(self, resource_directory):
+        """Test that national resources are provided when no local resources exist."""
+        # Use a location with no local resources
+        remote_criteria = SearchCriteria(
+            location=Location(state="WY", county="Teton"),
+            issue_type=LegalIssueType.WAGE_THEFT,
+            language="en"
+        )
+        
+        organizations = await resource_directory.find_organizations(remote_criteria)
+        
+        assert len(organizations) > 0
+        # All returned organizations should be national resources
+        for org in organizations:
+            assert "ALL" in org.service_area.states
+            assert LegalIssueType.WAGE_THEFT in org.specializations
+
+    @pytest.mark.asyncio
+    async def test_fallback_referrals_include_context(self, resource_directory):
+        """Test that fallback referrals include appropriate context messaging."""
+        remote_criteria = SearchCriteria(
+            location=Location(state="MT", county="Glacier"),
+            issue_type=LegalIssueType.TENANT_RIGHTS,
+            language="en"
+        )
+        
+        referrals = await resource_directory.generate_referrals(remote_criteria)
+        
+        assert len(referrals) > 0
+        
+        # Check that fallback messaging is included
+        first_referral = referrals[0]
+        next_steps_text = " ".join(first_referral.next_steps).lower()
+        
+        assert "no local legal aid organizations found" in next_steps_text
+        assert "national resource" in next_steps_text
+
+    @pytest.mark.asyncio
+    async def test_local_resources_prioritized_over_national(self, resource_directory):
+        """Test that local resources are prioritized when available."""
+        # Use Los Angeles which has local resources
+        local_criteria = SearchCriteria(
+            location=Location(state="CA", county="Los Angeles"),
+            issue_type=LegalIssueType.DOMESTIC_VIOLENCE,
+            language="en"
+        )
+        
+        organizations = await resource_directory.find_organizations(local_criteria)
+        
+        assert len(organizations) > 1  # Should have both local and national
+        
+        # First organization should be local (higher relevance score)
+        first_org = organizations[0]
+        assert "CA" in first_org.service_area.states
+        assert "ALL" not in first_org.service_area.states
+
+    @pytest.mark.asyncio
+    async def test_resource_availability_validation(self, resource_directory):
+        """Test resource availability validation."""
+        # Test with a known organization
+        org = resource_directory._organizations["legal_aid_society_la"]
+        
+        # Should pass validation
+        assert resource_directory._validate_resource_availability(org) is True
+        assert resource_directory._validate_contact_info(org) is True
+
+    @pytest.mark.asyncio
+    async def test_national_resource_identification(self, resource_directory):
+        """Test identification of national vs local resources."""
+        # Test national resource
+        national_org = resource_directory._organizations["national_domestic_violence_hotline"]
+        assert resource_directory._is_national_resource(national_org) is True
+        
+        # Test local resource
+        local_org = resource_directory._organizations["legal_aid_society_la"]
+        assert resource_directory._is_national_resource(local_org) is False
+
+    @pytest.mark.asyncio
+    async def test_all_issue_types_have_fallback_resources(self, resource_directory):
+        """Test that all legal issue types have national fallback resources."""
+        remote_location = Location(state="WY", county="Teton")
+        
+        for issue_type in LegalIssueType:
+            criteria = SearchCriteria(
+                location=remote_location,
+                issue_type=issue_type,
+                language="en"
+            )
+            
+            organizations = await resource_directory.find_organizations(criteria)
+            
+            # Should find at least one national resource for each issue type
+            assert len(organizations) > 0, f"No fallback resources found for {issue_type.value}"
+            
+            # All should be national resources
+            for org in organizations:
+                assert "ALL" in org.service_area.states
+                assert issue_type in org.specializations or LegalIssueType.OTHER in org.specializations
+
+    @pytest.mark.asyncio
+    async def test_contact_info_validation(self, resource_directory):
+        """Test contact information validation logic."""
+        # Create a test organization with valid contact info
+        from ai_legal_aid.types import ContactInfo, Address, OperatingHours
+        
+        valid_contact = ContactInfo(
+            phone="(555) 123-4567",
+            email="test@example.org",
+            address=Address(
+                street="123 Test St",
+                city="Test City",
+                state="CA",
+                zip_code="90210"
+            ),
+            website="https://example.org",
+            intake_hours=OperatingHours(
+                monday={"open": "9:00 AM", "close": "5:00 PM"}
+            )
+        )
+        
+        # Create a mock organization for testing
+        from ai_legal_aid.types import LegalAidOrganization, GeographicArea
+        
+        test_org = LegalAidOrganization(
+            id="test_org",
+            name="Test Organization",
+            contact_info=valid_contact,
+            specializations=[LegalIssueType.OTHER],
+            service_area=GeographicArea(states=["CA"]),
+            languages=["en"],
+            availability=OperatingHours(
+                monday={"open": "9:00 AM", "close": "5:00 PM"}
+            ),
+            eligibility_requirements=[]
+        )
+        
+        assert resource_directory._validate_contact_info(test_org) is True

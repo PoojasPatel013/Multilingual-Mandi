@@ -255,6 +255,128 @@ class BasicResourceDirectory:
                 "eligibility_requirements": [
                     "Anyone affected by domestic violence"
                 ]
+            },
+            {
+                "id": "legal_aid_national_helpline",
+                "name": "Legal Aid National Helpline",
+                "contact_info": ContactInfo(
+                    phone="1-844-524-3572",
+                    email="help@legalaidnational.org",
+                    address=Address(
+                        street="1140 Connecticut Ave NW",
+                        city="Washington",
+                        state="DC",
+                        zip_code="20036"
+                    ),
+                    website="https://www.lsc.gov/find-legal-aid",
+                    intake_hours=OperatingHours(
+                        monday={"open": "9:00 AM", "close": "5:00 PM"},
+                        tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                        friday={"open": "9:00 AM", "close": "5:00 PM"}
+                    )
+                ),
+                "specializations": [
+                    LegalIssueType.TENANT_RIGHTS,
+                    LegalIssueType.LAND_DISPUTE,
+                    LegalIssueType.OTHER
+                ],
+                "service_area": GeographicArea(
+                    states=["ALL"],  # National coverage
+                    counties=[]
+                ),
+                "languages": ["en", "es"],
+                "availability": OperatingHours(
+                    monday={"open": "9:00 AM", "close": "5:00 PM"},
+                    tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                    friday={"open": "9:00 AM", "close": "5:00 PM"}
+                ),
+                "eligibility_requirements": [
+                    "Low-income individuals and families",
+                    "Legal issue within scope of civil legal aid"
+                ]
+            },
+            {
+                "id": "national_employment_law_project",
+                "name": "National Employment Law Project Helpline",
+                "contact_info": ContactInfo(
+                    phone="1-866-487-9243",
+                    email="info@nelp.org",
+                    address=Address(
+                        street="90 Broad Street",
+                        city="New York",
+                        state="NY",
+                        zip_code="10004"
+                    ),
+                    website="https://www.nelp.org/get-help",
+                    intake_hours=OperatingHours(
+                        monday={"open": "9:00 AM", "close": "5:00 PM"},
+                        tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                        friday={"open": "9:00 AM", "close": "5:00 PM"}
+                    )
+                ),
+                "specializations": [LegalIssueType.WAGE_THEFT],
+                "service_area": GeographicArea(
+                    states=["ALL"],  # National coverage
+                    counties=[]
+                ),
+                "languages": ["en", "es"],
+                "availability": OperatingHours(
+                    monday={"open": "9:00 AM", "close": "5:00 PM"},
+                    tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                    friday={"open": "9:00 AM", "close": "5:00 PM"}
+                ),
+                "eligibility_requirements": [
+                    "Workers experiencing wage theft or employment violations"
+                ]
+            },
+            {
+                "id": "national_housing_law_project",
+                "name": "National Housing Law Project",
+                "contact_info": ContactInfo(
+                    phone="1-415-546-7000",
+                    email="nhlp@nhlp.org",
+                    address=Address(
+                        street="1663 Mission St",
+                        city="San Francisco",
+                        state="CA",
+                        zip_code="94103"
+                    ),
+                    website="https://www.nhlp.org/resources",
+                    intake_hours=OperatingHours(
+                        monday={"open": "9:00 AM", "close": "5:00 PM"},
+                        tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                        thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                        friday={"open": "9:00 AM", "close": "5:00 PM"}
+                    )
+                ),
+                "specializations": [
+                    LegalIssueType.TENANT_RIGHTS,
+                    LegalIssueType.LAND_DISPUTE
+                ],
+                "service_area": GeographicArea(
+                    states=["ALL"],  # National coverage
+                    counties=[]
+                ),
+                "languages": ["en", "es"],
+                "availability": OperatingHours(
+                    monday={"open": "9:00 AM", "close": "5:00 PM"},
+                    tuesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    wednesday={"open": "9:00 AM", "close": "5:00 PM"},
+                    thursday={"open": "9:00 AM", "close": "5:00 PM"},
+                    friday={"open": "9:00 AM", "close": "5:00 PM"}
+                ),
+                "eligibility_requirements": [
+                    "Individuals facing housing-related legal issues"
+                ]
             }
         ]
 
@@ -270,12 +392,29 @@ class BasicResourceDirectory:
         Find legal aid organizations matching search criteria.
         
         Searches based on location, issue type, language, and urgency.
+        Implements fallback to national resources when no local resources are available.
         """
         matching_orgs = []
+        local_orgs = []
+        national_orgs = []
         
         for org in self._organizations.values():
             if self._matches_criteria(org, criteria):
-                matching_orgs.append(org)
+                # Validate resource availability and contact info
+                if self._validate_resource_availability(org) and self._validate_contact_info(org):
+                    if self._is_national_resource(org):
+                        national_orgs.append(org)
+                    else:
+                        local_orgs.append(org)
+        
+        # Prioritize local resources, but include national as fallback
+        if local_orgs:
+            matching_orgs = local_orgs
+            # Add relevant national resources as additional options
+            matching_orgs.extend([org for org in national_orgs if self._is_relevant_national_resource(org, criteria)])
+        else:
+            # No local resources found - use national resources as fallback
+            matching_orgs = national_orgs
         
         # Sort by relevance (specialization match, then geographic proximity)
         matching_orgs.sort(
@@ -375,21 +514,30 @@ class BasicResourceDirectory:
         if criteria.language and criteria.language in org.languages:
             score += 3.0
         
-        # Geographic proximity (simplified - could be enhanced with actual distance calculation)
+        # Geographic proximity and coverage
         if criteria.location:
             if self._serves_location(org, criteria.location):
-                score += 2.0
-                
-                # Bonus for local organizations
-                if criteria.location.county and org.service_area.counties:
-                    if criteria.location.county in org.service_area.counties:
-                        score += 3.0
+                if self._is_national_resource(org):
+                    # National resources get moderate score as fallback
+                    score += 1.0
+                else:
+                    # Local resources get higher score
+                    score += 2.0
+                    
+                    # Bonus for local organizations
+                    if criteria.location.county and org.service_area.counties:
+                        if criteria.location.county in org.service_area.counties:
+                            score += 3.0
         
         # Urgency considerations
         if criteria.urgency:
             # 24-hour availability for urgent cases
             if self._has_24_hour_availability(org):
                 score += 2.0
+        
+        # Resource availability and validation bonus
+        if self._validate_resource_availability(org):
+            score += 1.0
         
         return score
 
@@ -412,31 +560,50 @@ class BasicResourceDirectory:
         Generate resource referrals based on search criteria.
         
         Returns a list of ResourceReferral objects with recommended next steps.
+        Implements fallback logic to ensure users always receive helpful resources.
         """
         organizations = await self.find_organizations(criteria)
         referrals = []
         
-        for org in organizations[:max_referrals]:
-            relevance_score = self._calculate_relevance_score(org, criteria)
-            
-            # Determine recommended contact method
-            contact_method = self._get_recommended_contact_method(org, criteria)
-            
-            # Generate next steps
-            next_steps = self._generate_next_steps(org, criteria)
-            
-            # Estimate wait time
-            wait_time = self._estimate_wait_time(org, criteria)
-            
-            referral = ResourceReferral(
-                organization=org,
-                relevance_score=min(relevance_score / 20.0, 1.0),  # Normalize to 0-1
-                contact_method=contact_method,
-                next_steps=next_steps,
-                estimated_wait_time=wait_time
-            )
-            
-            referrals.append(referral)
+        # Check if we have local resources
+        local_orgs = [org for org in organizations if not self._is_national_resource(org)]
+        national_orgs = [org for org in organizations if self._is_national_resource(org)]
+        
+        # If no local resources, prioritize national resources and add explanatory messaging
+        if not local_orgs and national_orgs:
+            # Use national resources as primary referrals
+            for org in national_orgs[:max_referrals]:
+                relevance_score = self._calculate_relevance_score(org, criteria)
+                contact_method = self._get_recommended_contact_method(org, criteria)
+                next_steps = self._generate_fallback_next_steps(org, criteria)
+                wait_time = self._estimate_wait_time(org, criteria)
+                
+                referral = ResourceReferral(
+                    organization=org,
+                    relevance_score=min(relevance_score / 20.0, 1.0),  # Normalize to 0-1
+                    contact_method=contact_method,
+                    next_steps=next_steps,
+                    estimated_wait_time=wait_time
+                )
+                
+                referrals.append(referral)
+        else:
+            # Standard referral generation with local resources prioritized
+            for org in organizations[:max_referrals]:
+                relevance_score = self._calculate_relevance_score(org, criteria)
+                contact_method = self._get_recommended_contact_method(org, criteria)
+                next_steps = self._generate_next_steps(org, criteria)
+                wait_time = self._estimate_wait_time(org, criteria)
+                
+                referral = ResourceReferral(
+                    organization=org,
+                    relevance_score=min(relevance_score / 20.0, 1.0),  # Normalize to 0-1
+                    contact_method=contact_method,
+                    next_steps=next_steps,
+                    estimated_wait_time=wait_time
+                )
+                
+                referrals.append(referral)
         
         return referrals
 
@@ -483,6 +650,40 @@ class BasicResourceDirectory:
         
         return steps
 
+    def _generate_fallback_next_steps(
+        self, org: LegalAidOrganization, criteria: SearchCriteria
+    ) -> List[str]:
+        """Generate next steps for fallback national resources."""
+        steps = []
+        
+        # Add context about why this is a fallback resource
+        steps.append("No local legal aid organizations found in your area")
+        steps.append(f"This is a national resource that can help with {criteria.issue_type.value.replace('_', ' ') if criteria.issue_type else 'legal issues'}")
+        
+        # Basic contact step
+        steps.append(f"Call {org.contact_info.phone} during intake hours")
+        
+        # Online resources
+        if org.contact_info.website:
+            steps.append(f"Visit {org.contact_info.website} for online resources and information")
+        
+        # Preparation steps
+        steps.append("Gather relevant documents and information about your situation")
+        
+        # They may be able to refer to local resources
+        steps.append("Ask if they can refer you to local resources in your area")
+        
+        # Language considerations
+        if criteria.language and criteria.language in org.languages:
+            if criteria.language != "en":
+                steps.append(f"Services available in your preferred language")
+        
+        # Urgency-specific steps
+        if criteria.urgency and criteria.urgency.value == "emergency":
+            steps.insert(1, "This is an emergency resource - call immediately")
+        
+        return steps
+
     def _estimate_wait_time(
         self, org: LegalAidOrganization, criteria: SearchCriteria
     ) -> Optional[str]:
@@ -500,6 +701,89 @@ class BasicResourceDirectory:
             return "Usually same-day response for safety planning"
         
         return "Typically 1-2 weeks for initial consultation"
+
+    def _validate_resource_availability(self, org: LegalAidOrganization) -> bool:
+        """
+        Validate that a resource is currently available and operational.
+        
+        Checks operating hours, contact information validity, and service status.
+        """
+        # Check if organization has valid operating hours
+        if not self._has_valid_operating_hours(org):
+            return False
+        
+        # Check if contact information is complete and valid
+        if not self._validate_contact_info(org):
+            return False
+        
+        # Additional availability checks could be added here
+        # (e.g., checking if phone numbers are working, websites are accessible)
+        
+        return True
+
+    def _validate_contact_info(self, org: LegalAidOrganization) -> bool:
+        """
+        Validate that contact information is complete and properly formatted.
+        """
+        contact = org.contact_info
+        
+        # Phone number is required and should be properly formatted
+        if not contact.phone or len(contact.phone.strip()) == 0:
+            return False
+        
+        # Address should be complete
+        if not all([
+            contact.address.street,
+            contact.address.city,
+            contact.address.state,
+            contact.address.zip_code
+        ]):
+            return False
+        
+        # Intake hours should be defined
+        if not self._has_valid_operating_hours(org, check_intake=True):
+            return False
+        
+        return True
+
+    def _has_valid_operating_hours(self, org: LegalAidOrganization, check_intake: bool = False) -> bool:
+        """
+        Check if organization has valid operating hours defined.
+        """
+        hours = org.contact_info.intake_hours if check_intake else org.availability
+        
+        # At least one day should have operating hours defined
+        days = [hours.monday, hours.tuesday, hours.wednesday, hours.thursday, 
+                hours.friday, hours.saturday, hours.sunday]
+        
+        return any(day is not None and day.get("open") and day.get("close") for day in days)
+
+    def _is_national_resource(self, org: LegalAidOrganization) -> bool:
+        """Check if an organization is a national resource."""
+        return "ALL" in org.service_area.states
+
+    def _is_relevant_national_resource(self, org: LegalAidOrganization, criteria: SearchCriteria) -> bool:
+        """
+        Check if a national resource is relevant for the given criteria.
+        
+        National resources are included when they match the issue type or provide general legal aid.
+        """
+        if not self._is_national_resource(org):
+            return False
+        
+        # If no specific issue type, include general legal aid resources
+        if not criteria.issue_type:
+            return True
+        
+        # Include if organization specializes in the specific issue type
+        if criteria.issue_type in org.specializations:
+            return True
+        
+        # Include general legal aid resources for any issue type
+        if LegalIssueType.OTHER in org.specializations:
+            return True
+        
+        return False
 
 
 # Factory function for creating the resource directory

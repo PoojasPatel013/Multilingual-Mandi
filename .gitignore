@@ -14,7 +14,8 @@ coverage/
 *.lcov
 
 .hypothesis
-
+**/__pycache__/
+ai_legal_aid.egg-info/
 # Environment variables
 .env
 .env.local
