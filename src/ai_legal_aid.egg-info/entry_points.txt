@@ -1,2 +1,0 @@
-[console_scripts]
-ai-legal-aid = ai_legal_aid.main:main

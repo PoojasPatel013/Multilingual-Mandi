@@ -88,7 +88,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - Create disclaimer acknowledgment tracking
     - _Requirements: 4.1, 4.2, 4.5_
   
-  - [~] 5.2 Add legal advice boundary enforcement
+  - [ ] 5.2 Add legal advice boundary enforcement
     - Implement detection of requests for specific legal advice
     - Add appropriate limitation explanations and redirections
     - _Requirements: 4.4_
@@ -108,7 +108,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - Create follow-up question generation logic
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
   
-  - [~] 6.2 Add conversation summarization and session ending
+  - [ ] 6.2 Add conversation summarization and session ending
     - Implement conversation summarization logic
     - Add session ending with resource summary
     - Create conversation length management
@@ -119,14 +119,14 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - **Validates: Requirements 8.1, 8.2, 8.4, 8.5**
 
 - [ ] 7. Complete system integration and main application
-  - [~] 7.1 Wire all components together into complete system
+  - [ ] 7.1 Wire all components together into complete system
     - Complete main application entry point with component initialization
     - Connect all implemented components (session, legal, resource, disclaimer, conversation)
     - Add comprehensive error handling and logging
     - Create text-based interface for testing complete system
     - _Requirements: All requirements (integration)_
   
-  - [~] 7.2 Add data management and privacy features
+  - [ ] 7.2 Add data management and privacy features
     - Implement comprehensive data deletion capabilities
     - Create data retention policy enforcement
     - Implement audit trail for data operations
@@ -136,25 +136,25 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - **Property 11: Data Deletion Capability**
     - **Validates: Requirements 5.5**
 
-- [~] 8. Checkpoint - Core system validation
+- [ ] 8. Checkpoint - Core system validation
   - Ensure all core components work together
   - Validate text-based user journeys work end-to-end
   - Ask the user if questions arise
 
 - [ ] 9. Implement voice interface components
-  - [~] 9.1 Create speech-to-text service integration
+  - [ ] 9.1 Create speech-to-text service integration
     - Implement SpeechToTextService interface
     - Add cloud STT service integration (Google Speech-to-Text)
     - Create confidence scoring and error handling
     - _Requirements: 1.1, 1.3, 1.4, 1.5_
   
-  - [~] 9.2 Create text-to-speech service integration
+  - [ ] 9.2 Create text-to-speech service integration
     - Implement TextToSpeechService interface
     - Add neural TTS integration with multi-language support
     - Create voice settings and audio playback management
     - _Requirements: 1.2, 7.1, 7.2_
   
-  - [~] 9.3 Integrate voice interface with conversation engine
+  - [ ] 9.3 Integrate voice interface with conversation engine
     - Connect speech services to conversation flow
     - Add voice-specific error handling and fallbacks
     - Create voice interaction loop
@@ -169,7 +169,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - **Validates: Requirements 1.3**
 
 - [ ] 10. Implement multi-language support
-  - [~] 10.1 Add language detection and processing
+  - [ ] 10.1 Add language detection and processing
     - Implement language detection for voice input
     - Add multi-language response generation
     - Create language-specific legal guidance
@@ -180,7 +180,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - **Validates: Requirements 1.4, 7.1, 7.2**
 
 - [ ] 11. Implement system performance and resilience features
-  - [~] 11.1 Add performance monitoring and response time management
+  - [ ] 11.1 Add performance monitoring and response time management
     - Implement response time tracking and optimization
     - Add load balancing and queuing for high traffic
     - Create graceful degradation for component failures
@@ -197,7 +197,7 @@ This implementation plan breaks down the AI Legal Aid system into incremental co
     - Test error recovery and graceful degradation scenarios
     - _Requirements: All requirements (end-to-end validation)_
 
-- [~] 13. Final checkpoint and system validation
+- [ ] 13. Final checkpoint and system validation
   - Ensure all tests pass, ask the user if questions arise
   - Validate all 13 correctness properties are implemented and tested
   - Confirm all requirements are covered by implementation tasks
