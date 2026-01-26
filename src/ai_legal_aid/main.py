@@ -1,26 +1,26 @@
 """
-Main entry point for the AI Legal Aid System.
+Main application entry point for the AI Legal Aid System.
 
-This module provides the main application entry point and basic
-system initialization. The full system will be wired together
-in later implementation tasks.
+This module wires together all system components and provides
+a complete functional legal aid application with text-based interaction.
 """
 
 import asyncio
-import logging
 import sys
 from typing import Optional
 
-import structlog
-from pydantic import BaseModel
+from ai_legal_aid.session_manager import InMemorySessionManager
+from ai_legal_aid.legal_guidance_engine import BasicLegalGuidanceEngine
+from ai_legal_aid.resource_directory import BasicResourceDirectory
+from ai_legal_aid.disclaimer_service import BasicDisclaimerService
+from ai_legal_aid.conversation_engine import BasicConversationEngine
+from ai_legal_aid.types import SessionId
 
 
-class Settings(BaseModel):
-    """Application settings and configuration."""
-
-    # Application settings
-    app_name: str = "AI Legal Aid System"
-    version: str = "0.1.0"
+class AILegalAidApplication:
+    """
+    Main AI Legal Aid Application.
+    
     debug: bool = False
 
     # Voice interface settings
