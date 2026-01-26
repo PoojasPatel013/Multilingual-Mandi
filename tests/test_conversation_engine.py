@@ -106,8 +106,9 @@ class TestConversationEngine:
     @pytest.mark.asyncio
     async def test_process_legal_query_tenant_rights(self, conversation_engine, sample_session, disclaimer_service):
         """Test processing a tenant rights legal query."""
-        # Acknowledge disclaimer first
+        # Acknowledge disclaimers first
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "initial")
+        await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "high_risk")
         
         response = await conversation_engine.process_user_input(
             sample_session, "My landlord is trying to evict me without proper notice"
@@ -122,8 +123,9 @@ class TestConversationEngine:
     @pytest.mark.asyncio
     async def test_process_legal_query_domestic_violence(self, conversation_engine, sample_session, disclaimer_service):
         """Test processing a domestic violence legal query."""
-        # Acknowledge disclaimer first
+        # Acknowledge disclaimers first
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "initial")
+        await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "high_risk")
         
         response = await conversation_engine.process_user_input(
             sample_session, "My partner has been threatening me and I need help"
@@ -178,8 +180,9 @@ class TestConversationEngine:
     @pytest.mark.asyncio
     async def test_summarize_conversation(self, conversation_engine, sample_session, disclaimer_service):
         """Test conversation summarization."""
-        # Acknowledge disclaimer and have a conversation
+        # Acknowledge all necessary disclaimers
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "initial")
+        await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "contextual_tenant_rights")
         
         await conversation_engine.process_user_input(
             sample_session, "I have a tenant rights issue"
@@ -328,7 +331,7 @@ class TestResourceIntegration:
         await disclaimer_service.record_disclaimer_acknowledgment(sample_session, "high_risk")
         
         response = await conversation_engine.process_user_input(
-            sample_session, "I am in immediate danger from my partner"
+            sample_session, "My intimate partner is abusing me and I need help"
         )
         
         assert len(response.resources) > 0

@@ -93,18 +93,32 @@ class BasicConversationEngine:
                 context.session.language
             )
             disclaimer_type = "initial"
+        elif context.session.user_context.legal_issue_type:
+            issue_type = context.session.user_context.legal_issue_type
+            contextual_type = f"contextual_{issue_type.value}"
+            if not self.disclaimer_service._has_acknowledged_disclaimer(session_id, contextual_type):
+                disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
+                    issue_type, context.session.language
+                )
+                disclaimer_type = contextual_type
+            elif self.disclaimer_service._is_high_risk_situation(context) and not self.disclaimer_service._has_acknowledged_disclaimer(session_id, "high_risk"):
+                # High-risk situation disclaimer
+                disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
+                    LegalIssueType.OTHER, context.session.language
+                )
+                disclaimer_type = "high_risk"
+            else:
+                # Periodic reminder
+                disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
+                    LegalIssueType.OTHER, context.session.language
+                )
+                disclaimer_type = "reminder"
         elif self.disclaimer_service._is_high_risk_situation(context) and not self.disclaimer_service._has_acknowledged_disclaimer(session_id, "high_risk"):
             # High-risk situation disclaimer
             disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
                 LegalIssueType.OTHER, context.session.language
             )
             disclaimer_type = "high_risk"
-        elif context.session.user_context.legal_issue_type:
-            issue_type = context.session.user_context.legal_issue_type
-            disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
-                issue_type, context.session.language
-            )
-            disclaimer_type = f"contextual_{issue_type.value}"
         else:
             # Periodic reminder
             disclaimer_text = await self.disclaimer_service.get_contextual_disclaimer(
@@ -457,9 +471,9 @@ class BasicConversationEngine:
         
         input_lower = input_text.lower().strip()
         
-        # Check for negative responses first
+        # Check for negative responses first (use word boundaries to avoid false positives)
         negative_phrases = ["no", "don't", "not", "disagree", "refuse"]
-        if any(neg in input_lower for neg in negative_phrases):
+        if any(f" {neg} " in f" {input_lower} " or input_lower.startswith(f"{neg} ") or input_lower.endswith(f" {neg}") or input_lower == neg for neg in negative_phrases):
             return False
         
         return any(phrase in input_lower for phrase in acknowledgment_phrases)

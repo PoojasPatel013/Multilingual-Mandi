@@ -15,7 +15,11 @@ coverage/
 
 .hypothesis
 **/__pycache__/
+tests/__pycache__/
+src/ai_legal_aid/__pycache__/
+
 ai_legal_aid.egg-info/
+
 # Environment variables
 .env
 .env.local
