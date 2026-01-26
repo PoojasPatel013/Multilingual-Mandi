@@ -34,19 +34,19 @@ This implementation plan breaks down The Multilingual Mandi platform into discre
     - Create cultural profile and language preference settings
     - _Requirements: 3.1, 4.1, 5.1_
 
-  - [-] 2.4 Write unit tests for user management
+  - [x] 2.4 Write unit tests for user management
     - Test profile creation and updates using pytest
     - Test role-based access control
     - _Requirements: 3.1, 4.1, 5.1_
 
 - [ ] 3. Database Models and Core Data Layer
-  - [~] 3.1 Implement core data models
+  - [x] 3.1 Implement core data models
     - Create SQLAlchemy models for User, VendorProfile, Product, and Transaction
     - Set up database relationships and constraints using SQLAlchemy ORM
     - Implement data validation with Pydantic models and sanitization
     - _Requirements: 4.2, 5.1, 6.1_
 
-  - [~] 3.2 Write property test for data model integrity
+  - [-] 3.2 Write property test for data model integrity
     - **Property 7: Historical Data Integrity**
     - **Validates: Requirements 2.4**
 
