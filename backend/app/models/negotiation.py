@@ -6,9 +6,10 @@ the Multilingual Mandi platform.
 """
 
 from enum import Enum
+from datetime import datetime
 
 from sqlalchemy import (
-    Boolean, Column, Enum as SQLEnum, Float, ForeignKey, Integer,
+    Boolean, Column, DateTime, Enum as SQLEnum, Float, ForeignKey, Integer,
     JSON, String, Text
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -68,8 +69,8 @@ class Negotiation(Base, UUIDMixin, TimestampMixin):
         nullable=False,
         index=True
     )
-    expires_at = Column("expires_at")
-    completed_at = Column("completed_at")
+    expires_at = Column(DateTime(timezone=True))
+    completed_at = Column(DateTime(timezone=True))
     
     # Cultural context
     cultural_context = Column(JSON)  # Cultural considerations
@@ -116,7 +117,7 @@ class NegotiationMessage(Base, UUIDMixin, TimestampMixin):
         nullable=False
     )
     is_read = Column(Boolean, default=False, nullable=False)
-    read_at = Column("read_at")
+    read_at = Column(DateTime(timezone=True))
     
     # Translation metadata
     translation_confidence = Column(Float)
@@ -218,7 +219,7 @@ class TranslationCache(Base, UUIDMixin, TimestampMixin):
     
     # Usage statistics
     usage_count = Column(Integer, default=1, nullable=False)
-    last_used = Column("last_used", nullable=False)
+    last_used = Column(DateTime(timezone=True), nullable=False)
     
     # Quality indicators
     is_verified = Column(Boolean, default=False, nullable=False)

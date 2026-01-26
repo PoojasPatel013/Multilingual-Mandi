@@ -8,7 +8,7 @@ the Multilingual Mandi platform.
 from enum import Enum
 
 from sqlalchemy import (
-    Boolean, Column, Enum as SQLEnum, Float, ForeignKey, Integer,
+    Boolean, Column, DateTime, Enum as SQLEnum, Float, ForeignKey, Integer,
     JSON, String, Text
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -85,11 +85,11 @@ class Transaction(Base, UUIDMixin, TimestampMixin):
     # Delivery and fulfillment
     delivery_address = Column(JSON)
     delivery_method = Column(String(100))
-    estimated_delivery = Column("estimated_delivery")
-    actual_delivery = Column("actual_delivery")
+    estimated_delivery = Column(DateTime(timezone=True))
+    actual_delivery = Column(DateTime(timezone=True))
     
-    # Metadata
-    metadata = Column(JSON)  # Additional transaction data
+    # Additional data
+    transaction_metadata = Column(JSON)  # Additional transaction data
     notes = Column(Text)
     
     # Relationships
@@ -128,7 +128,7 @@ class Payment(Base, UUIDMixin, TimestampMixin):
     provider_response = Column(JSON)
     
     # Processing details
-    processed_at = Column("processed_at")
+    processed_at = Column(DateTime(timezone=True))
     failure_reason = Column(Text)
     
     # Relationships
@@ -159,9 +159,9 @@ class Escrow(Base, UUIDMixin, TimestampMixin):
     release_conditions = Column(JSON)  # Conditions for release
     
     # Timeline
-    funded_at = Column("funded_at")
-    release_date = Column("release_date")
-    released_at = Column("released_at")
+    funded_at = Column(DateTime(timezone=True))
+    release_date = Column(DateTime(timezone=True))
+    released_at = Column(DateTime(timezone=True))
     
     # Dispute handling
     dispute_reason = Column(Text)
@@ -193,7 +193,7 @@ class Refund(Base, UUIDMixin, TimestampMixin):
     # Status and processing
     status = Column(String(50), default="pending", nullable=False)
     provider_reference = Column(String(200))
-    processed_at = Column("processed_at")
+    processed_at = Column(DateTime(timezone=True))
     
     # Relationships
     transaction = relationship("Transaction")

@@ -5,11 +5,12 @@ This module defines the user, vendor profile, and related models for
 the Multilingual Mandi platform.
 """
 
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
 from sqlalchemy import (
-    Boolean, Column, Enum as SQLEnum, Float, ForeignKey, Integer, 
+    Boolean, Column, DateTime, Enum as SQLEnum, Float, ForeignKey, Integer, 
     JSON, String, Text
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -71,7 +72,7 @@ class User(Base, UUIDMixin, TimestampMixin):
     
     # Activity tracking
     last_active = Column(
-        "last_active",
+        DateTime(timezone=True),
         nullable=True,
         index=True
     )
@@ -80,6 +81,12 @@ class User(Base, UUIDMixin, TimestampMixin):
     # Relationships
     vendor_profile = relationship(
         "VendorProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+    customer_profile = relationship(
+        "CustomerProfile",
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan"
@@ -123,6 +130,36 @@ class VendorProfile(Base, UUIDMixin, TimestampMixin):
     
     def __repr__(self) -> str:
         return f"<VendorProfile(id={self.id}, business_name={self.business_name})>"
+
+
+class CustomerProfile(Base, UUIDMixin, TimestampMixin):
+    """Extended profile for customer users."""
+    
+    __tablename__ = "customer_profiles"
+    
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    
+    # Shopping preferences
+    preferred_categories = Column(JSON)  # List of preferred product categories
+    price_range_preferences = Column(JSON)  # Price range preferences by category
+    
+    # Purchase history summary
+    total_purchases = Column(Integer, default=0, nullable=False)
+    total_spent = Column(Float, default=0.0, nullable=False)
+    average_rating_given = Column(Float, default=0.0, nullable=False)
+    
+    # Wishlist and favorites
+    wishlist_items = Column(JSON)  # List of product IDs
+    favorite_vendors = Column(JSON)  # List of vendor IDs
+    
+    # Communication preferences
+    notification_preferences = Column(JSON)  # Notification settings
+    
+    # Relationships
+    user = relationship("User", back_populates="customer_profile")
+    
+    def __repr__(self) -> str:
+        return f"<CustomerProfile(id={self.id}, user_id={self.user_id})>"
 
 
 class PaymentMethod(Base, UUIDMixin, TimestampMixin):

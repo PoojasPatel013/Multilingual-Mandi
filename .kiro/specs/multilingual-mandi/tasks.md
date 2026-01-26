@@ -8,7 +8,7 @@ This implementation plan breaks down The Multilingual Mandi platform into discre
 
 ## Tasks
 
-- [-] 1. Project Setup and Core Infrastructure
+- [x] 1. Project Setup and Core Infrastructure
   - Set up Python backend with FastAPI framework
   - Configure virtual environment and dependency management with Poetry or pip-tools
   - Set up PostgreSQL database with initial schema using SQLAlchemy
@@ -18,23 +18,23 @@ This implementation plan breaks down The Multilingual Mandi platform into discre
   - _Requirements: 8.4, 9.1, 10.2_
 
 - [ ] 2. Authentication and User Management
-  - [~] 2.1 Implement user authentication system with JWT
+  - [x] 2.1 Implement user authentication system with JWT
     - Create user registration and login endpoints using FastAPI
     - Implement password hashing with bcrypt and validation with Pydantic
     - Set up JWT token generation and verification using PyJWT
     - _Requirements: 4.1, 5.1_
 
-  - [~] 2.2 Write property test for authentication security
+  - [x] 2.2 Write property test for authentication security
     - **Property 1: Authentication token validity**
     - **Validates: Requirements 4.1, 5.1**
 
-  - [~] 2.3 Create user profile management
+  - [x] 2.3 Create user profile management
     - Implement user profile CRUD operations with SQLAlchemy models
     - Add support for vendor and customer role differentiation
     - Create cultural profile and language preference settings
     - _Requirements: 3.1, 4.1, 5.1_
 
-  - [~] 2.4 Write unit tests for user management
+  - [-] 2.4 Write unit tests for user management
     - Test profile creation and updates using pytest
     - Test role-based access control
     - _Requirements: 3.1, 4.1, 5.1_
