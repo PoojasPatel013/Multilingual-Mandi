@@ -1,0 +1,9 @@
+# Minimal requirements for basic testing
+fastapi
+uvicorn
+sqlalchemy
+redis
+pydantic
+python-multipart
+aiofiles
+httpx
