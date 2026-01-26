@@ -68,8 +68,8 @@ async def list_products(
     vendor_id: Optional[UUID] = Query(None, description="Filter by vendor"),
     is_active: Optional[bool] = Query(None, description="Filter by active status"),
     is_featured: Optional[bool] = Query(None, description="Filter by featured status"),
-    sort_by: str = Query("created_at", regex="^(created_at|updated_at|name|price|rating)$"),
-    sort_order: str = Query("desc", regex="^(asc|desc)$"),
+    sort_by: str = Query("created_at", pattern="^(created_at|updated_at|name|price|rating)$"),
+    sort_order: str = Query("desc", pattern="^(asc|desc)$"),
     db: Session = Depends(get_db)
 ):
     """

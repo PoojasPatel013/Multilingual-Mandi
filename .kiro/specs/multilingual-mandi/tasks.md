@@ -70,17 +70,17 @@ This implementation plan breaks down The Multilingual Mandi platform into discre
     - **Property 14: Product Management Functionality**
     - **Validates: Requirements 4.2, 4.3**
 
-  - [-] 4.3 Create vendor dashboard backend
+  - [x] 4.3 Create vendor dashboard backend
     - Implement inventory management FastAPI endpoints
     - Create sales reporting and analytics endpoints using pandas
     - Add bulk product update functionality
     - _Requirements: 4.1, 4.3, 4.5_
 
-  - [~] 4.4 Write property test for vendor dashboard completeness
+  - [x] 4.4 Write property test for vendor dashboard completeness
     - **Property 13: Vendor Dashboard Completeness**
     - **Validates: Requirements 4.1**
 
-- [~] 5. Checkpoint - Core Backend Functionality
+- [-] 5. Checkpoint - Core Backend Functionality
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Frontend User Interfaces
