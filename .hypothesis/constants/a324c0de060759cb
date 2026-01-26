@@ -1,0 +1,4 @@
+# file: C:\Users\Admin\Downloads\26jan\src\ai_legal_aid\types\__init__.py
+# hypothesis_version: 6.151.2
+
+['Action', 'Address', 'AudioBuffer', 'AuditRecord', 'ComplexityLevel', 'ContactInfo', 'ContactMethod', 'ConversationContext', 'ConversationSummary', 'ConversationTurn', 'DocumentType', 'GeographicArea', 'IncomeRange', 'LegalAidOrganization', 'LegalCitation', 'LegalGuidance', 'LegalIssue', 'LegalIssueType', 'Location', 'OperatingHours', 'ResourceReferral', 'SearchCriteria', 'Session', 'SessionId', 'SpeechError', 'SystemError', 'SystemResponse', 'UrgencyLevel', 'UserContext']

@@ -1,0 +1,201 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-legal-aid"
+version = "0.1.0"
+description = "AI Legal Aid System - Voice-enabled legal guidance for underserved populations"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "AI Legal Aid Team", email = "team@ai-legal-aid.org"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.9"
+dependencies = [
+    # Core dependencies
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+    
+    # Voice interface
+    "google-cloud-speech>=2.0.0",
+    "google-cloud-texttospeech>=2.0.0",
+    "pyaudio>=0.2.11",
+    
+    # Data storage and encryption
+    "cryptography>=41.0.0",
+    "redis>=4.0.0",
+    "psycopg2-binary>=2.9.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    
+    # Web framework and API
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "python-multipart>=0.0.6",
+    
+    # Configuration and environment
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+    
+    # Logging and monitoring
+    "structlog>=23.0.0",
+    "prometheus-client>=0.17.0",
+    
+    # Date and time handling
+    "python-dateutil>=2.8.0",
+    
+    # HTTP client
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "hypothesis>=6.80.0",
+    "factory-boy>=3.3.0",
+    
+    # Code quality
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    "isort>=5.12.0",
+    "pre-commit>=3.0.0",
+    
+    # Documentation
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    
+    # Development tools
+    "ipython>=8.0.0",
+    "jupyter>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ai-legal-aid/ai-legal-aid"
+Repository = "https://github.com/ai-legal-aid/ai-legal-aid"
+Documentation = "https://ai-legal-aid.readthedocs.io"
+"Bug Tracker" = "https://github.com/ai-legal-aid/ai-legal-aid/issues"
+
+[project.scripts]
+ai-legal-aid = "ai_legal_aid.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+# Black configuration
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# isort configuration
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["ai_legal_aid"]
+
+# mypy configuration
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pyaudio.*",
+    "google.cloud.*",
+    "redis.*",
+    "psycopg2.*",
+]
+ignore_missing_imports = true
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "property: Property-based tests",
+    "slow: Slow running tests",
+    "voice: Voice interface tests",
+    "legal: Legal processing tests",
+    "privacy: Privacy and security tests",
+]
+asyncio_mode = "auto"
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Hypothesis configuration
+[tool.hypothesis]
+max_examples = 100
+deadline = 5000  # 5 seconds
+database = ".hypothesis/examples"

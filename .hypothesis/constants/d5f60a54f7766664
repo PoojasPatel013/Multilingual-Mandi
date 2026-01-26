@@ -1,0 +1,4 @@
+# file: C:\Users\Admin\Downloads\26jan\src\ai_legal_aid\types\base.py
+# hypothesis_version: 6.151.2
+
+['SessionId', 'above_moderate', 'complex', 'contract', 'court_document', 'domestic_violence', 'email', 'emergency', 'employment_record', 'high', 'identification', 'land_dispute', 'lease', 'low', 'medium', 'moderate', 'online', 'other', 'phone', 'simple', 'tenant_rights', 'very_low', 'wage_theft', 'walk_in']
