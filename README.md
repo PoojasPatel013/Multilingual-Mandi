@@ -76,3 +76,13 @@ graph TB
     
     PS --> FS
 ```
+
+
+Here is a test snippet:
+
+```python
+# This will fail because 'b' is not defined
+def add_numbers(a):
+    return a + b
+
+print(add_numbers(5))
