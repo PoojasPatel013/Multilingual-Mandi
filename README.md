@@ -76,3 +76,9 @@ graph TB
     
     PS --> FS
 ```
+
+```python
+# Intentionally broken code
+def add(a, b):
+    return a + b
+print(add(2)) # Missing the second argument!
