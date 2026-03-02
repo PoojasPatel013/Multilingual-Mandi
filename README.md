@@ -76,3 +76,15 @@ graph TB
     
     PS --> FS
 ```
+
+
+```python
+# Example: Multilingual price calculator
+def calculate_discount(price, discount_percent):
+    final_price = price - (price * discount_percent / 100)
+    return final_price
+
+# Bug: wrong number of arguments
+result = calculate_discount(500)
+print("Final price: " + result)  # Bug: can't concatenate str and float
+```
