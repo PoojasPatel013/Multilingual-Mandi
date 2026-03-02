@@ -76,3 +76,7 @@ graph TB
     
     PS --> FS
 ```
+```
+query = "SELECT * FROM users WHERE username = '" + user_input + "'";
+
+```
