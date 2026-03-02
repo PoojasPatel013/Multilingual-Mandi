@@ -76,3 +76,8 @@ graph TB
     
     PS --> FS
 ```
+
+```
+print(hello);
+ptf(scanf($$))
+```
