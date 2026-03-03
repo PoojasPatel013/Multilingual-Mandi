@@ -76,3 +76,6 @@ graph TB
     
     PS --> FS
 ```
+```
+printf(scanf())
+```
