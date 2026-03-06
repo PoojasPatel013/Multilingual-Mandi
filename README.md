@@ -77,7 +77,7 @@ graph TB
     PS --> FS
 ```
 def greet(name, age):
-    return "Hello " + name
+    return f"Hello {name}"
 
 print(greet("Alice"))
 
